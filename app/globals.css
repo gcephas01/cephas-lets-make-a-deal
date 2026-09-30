@@ -1,26 +1,867 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+* {
+  box-sizing: border-box;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: #100019;
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+button,
+input {
+  font: inherit;
+}
+
+button {
+  color: inherit;
+}
+
+/* =========================
+   MAIN STAGE
+========================= */
+
+.dealScreen {
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding: 18px clamp(18px, 3vw, 45px) 30px;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(255, 72, 195, 0.25), transparent 28%),
+    radial-gradient(circle at 10% 45%, rgba(255, 190, 48, 0.13), transparent 25%),
+    radial-gradient(circle at 90% 45%, rgba(92, 45, 255, 0.18), transparent 25%),
+    linear-gradient(145deg, #21002d 0%, #4a075c 45%, #160020 100%);
+}
+
+.dealScreen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.13;
+  background-image:
+    radial-gradient(circle, #fff 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.stageGlow {
+  position: absolute;
+  top: -300px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1000px;
+  height: 600px;
+  border-radius: 50%;
+  background: rgba(255, 207, 72, 0.14);
+  filter: blur(90px);
+}
+
+.dealHeader,
+.teamRow,
+.dealPrompt,
+.mysteryStage,
+.offerBanner,
+.hostPanel {
+  position: relative;
+  z-index: 2;
+}
+
+.dealHeader {
+  max-width: 1450px;
+  min-height: 100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 220px 1fr 220px;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,.15);
+}
+
+.dealLogo {
+  line-height: .8;
+  transform: rotate(-3deg);
+}
+
+.dealLogo small {
+  display: block;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 4px;
+  color: #ffd65d;
+}
+
+.dealLogo strong {
+  display: block;
+  margin-top: 7px;
+  font-size: 36px;
+  font-weight: 1000;
+  letter-spacing: -2px;
+}
+
+.headerTag {
+  text-align: center;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 4px;
+  color: rgba(255,255,255,.55);
+}
+
+.bigDealButton {
+  justify-self: end;
+  padding: 13px 18px;
+  border: 2px solid #ffd85d;
+  border-radius: 9px;
+  background: linear-gradient(#ffcc48, #b96c08);
+  color: #2c0a00;
+  font-size: 11px;
+  font-weight: 1000;
+  letter-spacing: 1px;
+  cursor: pointer;
+  box-shadow: 0 5px 0 #713b00;
+}
+
+.bigDealButton:hover {
+  filter: brightness(1.12);
+}
+
+/* =========================
+   TEAMS
+========================= */
+
+.teamRow {
+  max-width: 1100px;
+  margin: 18px auto 0;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.teamCard {
+  flex: 1;
+  max-width: 280px;
+  padding: 10px 15px;
+  border: 2px solid rgba(255,255,255,.16);
+  border-radius: 12px;
+  background: rgba(16, 0, 25, .65);
+  cursor: pointer;
+  transition: .18s ease;
+}
+
+.teamCard span {
+  display: block;
+  margin-bottom: 3px;
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,.45);
+}
+
+.teamCard strong {
+  display: block;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+.teamCard b {
+  display: block;
+  margin-top: 4px;
+  font-size: 25px;
+  color: #ffd65a;
+}
+
+.teamCard.active {
+  border-color: #ffda5e;
+  background: linear-gradient(135deg, #7c166f, #3b064c);
+  box-shadow:
+    0 0 0 2px rgba(255, 218, 94, .18),
+    0 0 24px rgba(255, 196, 55, .18);
+  transform: translateY(-2px);
+}
+
+.teamCard.active span {
+  color: #ffd85d;
+}
+
+/* =========================
+   PROMPT
+========================= */
+
+.dealPrompt {
+  text-align: center;
+  margin: 24px auto 12px;
+}
+
+.dealPrompt span {
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 4px;
+  color: #ffd75c;
+}
+
+.dealPrompt h1 {
+  margin: 4px 0 0;
+  font-size: clamp(27px, 4vw, 47px);
+  line-height: 1;
+  font-weight: 1000;
+  letter-spacing: -2px;
+}
+
+/* =========================
+   MYSTERY CHOICES
+========================= */
+
+.mysteryStage {
+  max-width: 1150px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+
+.mysteryChoice {
+  position: relative;
+  min-height: 300px;
+  padding: 18px;
+  overflow: hidden;
+  border: 3px solid rgba(255, 218, 93, .65);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at center, rgba(255,255,255,.09), transparent 45%),
+    rgba(25, 0, 35, .75);
+  cursor: pointer;
+  box-shadow:
+    inset 0 0 35px rgba(0,0,0,.35),
+    0 14px 35px rgba(0,0,0,.3);
+  transition: .2s ease;
+}
+
+.mysteryChoice:hover:not(.revealed) {
+  transform: translateY(-6px);
+  border-color: #ffe784;
+}
+
+.mysteryChoice.selected {
+  border-color: white;
+  box-shadow:
+    0 0 0 4px #ffd34c,
+    0 0 40px rgba(255, 203, 62, .4);
+}
+
+.doorVisual {
+  width: 170px;
+  height: 240px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 8px solid #d79d32;
+  outline: 3px solid #ffd96c;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.08), transparent 20%),
+    linear-gradient(#9c2d72, #4b0a48);
+  box-shadow: inset 0 0 30px rgba(0,0,0,.5);
+}
+
+.doorVisual span {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 4px;
+}
+
+.doorVisual strong {
+  font-size: 100px;
+  line-height: 1;
+  color: #ffd861;
+}
+
+.boxVisual {
+  width: 210px;
+  height: 180px;
+  margin: 55px auto 0;
+  position: relative;
+  display: grid;
+  place-items: center;
+  border: 6px solid #ffcf4e;
+  background: linear-gradient(135deg, #d52e85, #77145d);
+  box-shadow:
+    inset 0 0 25px rgba(0,0,0,.35),
+    0 12px 0 #4a0938;
+}
+
+.boxVisual::before {
+  content: "";
+  position: absolute;
+  left: 44%;
+  top: 0;
+  width: 12%;
+  height: 100%;
+  background: #ffdb67;
+}
+
+.boxVisual .bow {
+  position: absolute;
+  top: -50px;
+  font-size: 70px;
+  color: #ffdb67;
+}
+
+.boxVisual strong {
+  z-index: 1;
+  font-size: 24px;
+  letter-spacing: 4px;
+}
+
+.boxVisual b {
+  z-index: 1;
+  font-size: 52px;
+  line-height: .7;
+}
+
+.curtainVisual {
+  width: 220px;
+  height: 250px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-top: 12px solid #e9b33c;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #7b115f 0,
+      #b8237e 24px,
+      #6b0d53 48px
+    );
+  clip-path: polygon(0 0, 100% 0, 91% 100%, 9% 100%);
+  box-shadow: inset 0 0 40px rgba(0,0,0,.4);
+}
+
+.curtainVisual span {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 4px;
+}
+
+.curtainVisual strong {
+  font-size: 100px;
+  color: #ffd85c;
+  line-height: 1;
+}
+
+.choiceLocked {
+  position: absolute;
+  left: 50%;
+  bottom: 15px;
+  transform: translateX(-50%);
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: #ffd557;
+  color: #31072d;
+  font-size: 8px;
+  font-weight: 1000;
+  letter-spacing: 2px;
+}
+
+/* =========================
+   PRIZES
+========================= */
+
+.mysteryChoice.revealed {
+  cursor: default;
+  background:
+    radial-gradient(circle, rgba(255, 213, 82, .22), transparent 55%),
+    linear-gradient(145deg, #51115c, #24032d);
+}
+
+.prizeReveal {
+  min-height: 260px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.prizeIcon {
+  font-size: 68px;
+  margin-bottom: 12px;
+}
+
+.prizeReveal strong {
+  font-size: clamp(24px, 2.5vw, 37px);
+  line-height: .95;
+  color: #ffda5c;
+}
+
+.prizeReveal p {
+  max-width: 270px;
+  margin: 13px auto 0;
+  color: rgba(255,255,255,.72);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.zonkLabel {
+  margin-top: 15px;
+  padding: 7px 18px;
+  border: 2px solid white;
+  transform: rotate(-5deg);
+  background: #d30e4d;
+  font-size: 24px;
+  letter-spacing: 3px;
+}
+
+/* =========================
+   OFFER
+========================= */
+
+.offerBanner {
+  max-width: 720px;
+  margin: 20px auto;
+  padding: 18px 25px;
+  text-align: center;
+  border: 3px solid #ffe174;
+  border-radius: 15px;
+  background: linear-gradient(135deg, #e69d17, #8d3b08);
+  box-shadow: 0 15px 40px rgba(0,0,0,.4);
+}
+
+.offerBanner span {
+  display: block;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 4px;
+  color: #411400;
+}
+
+.offerBanner strong {
+  display: block;
+  margin-top: 2px;
+  font-size: 36px;
+  color: white;
+}
+
+.offerBanner p {
+  margin: 6px 0 12px;
+  font-size: 11px;
+}
+
+.offerBanner div {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.offerBanner button {
+  min-width: 150px;
+  padding: 11px;
+  border-radius: 7px;
+  font-size: 10px;
+  font-weight: 1000;
+  letter-spacing: 1px;
+  cursor: pointer;
+}
+
+.takeDeal {
+  border: 2px solid white;
+  background: #167f3d;
+}
+
+.noDeal {
+  border: 2px solid white;
+  background: #a31132;
+}
+
+/* =========================
+   HOST CONTROLS
+========================= */
+
+.hostPanel {
+  max-width: 1250px;
+  margin: 24px auto 0;
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(10, 0, 15, .68);
+}
+
+.hostToggle {
+  width: 100%;
+  padding: 10px;
+  border: 0;
+  background: rgba(255,255,255,.07);
+  color: #c9a8cb;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  cursor: pointer;
+}
+
+.hostControls {
+  padding: 15px;
+  display: grid;
+  grid-template-columns: 1.3fr 1.3fr 1.4fr .8fr;
+  gap: 13px;
+}
+
+.hostGroup {
+  padding: 12px;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 9px;
+}
+
+.hostGroup label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: #b797bb;
+}
+
+.hostGroup > button {
+  width: 100%;
+  min-height: 37px;
+  margin-top: 5px;
+  padding: 7px;
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 6px;
+  background: rgba(255,255,255,.08);
+  font-size: 8px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.hostGroup > button:disabled {
+  opacity: .25;
+  cursor: default;
+}
+
+.offerInput {
+  display: grid;
+  grid-template-columns: 35px 1fr 35px;
+}
+
+.offerInput button,
+.offerInput input {
+  min-height: 36px;
+  border: 1px solid rgba(255,255,255,.2);
+  background: #21072a;
+  color: white;
+  text-align: center;
+}
+
+.offerInput input {
+  width: 100%;
+  font-weight: 900;
+}
+
+.hostGroup .hostPrimary {
+  border-color: #dcae3d;
+  color: #ffda60;
+}
+
+.quickPoints {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+
+.quickPoints button {
+  min-height: 38px;
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 5px;
+  background: rgba(255,255,255,.07);
+  font-size: 8px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.newDealGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.newDealGroup .newDealButton {
+  flex: 1;
+  background: #7e186e;
+  border-color: #d559bc;
+  color: white;
+}
+
+/* =========================
+   BIG DEAL
+========================= */
+
+.bigDealScreen {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  padding: 30px;
+  text-align: center;
+  background:
+    radial-gradient(circle at center, rgba(255, 205, 63, .24), transparent 30%),
+    linear-gradient(145deg, #180012, #4c092f 45%, #110009);
+}
+
+.bigDealScreen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: .15;
+  background-image: radial-gradient(circle, #ffd963 1px, transparent 2px);
+  background-size: 32px 32px;
+}
+
+.bigDealGlow {
+  position: absolute;
+  left: 50%;
+  top: -300px;
+  transform: translateX(-50%);
+  width: 1000px;
+  height: 700px;
+  border-radius: 50%;
+  background: rgba(255, 204, 54, .14);
+  filter: blur(100px);
+}
+
+.bigDealHeader,
+.bigDealTeam,
+.bigDoors,
+.bigDealControls {
+  position: relative;
+  z-index: 2;
+}
+
+.bigDealHeader p {
+  margin: 0;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 4px;
+  color: #b98b4a;
+}
+
+.bigDealHeader h1 {
+  margin: 5px 0 0;
+  font-size: clamp(48px, 8vw, 105px);
+  line-height: .9;
+  color: #ffd65b;
+  letter-spacing: -5px;
+  text-shadow: 0 8px 25px rgba(0,0,0,.45);
+}
+
+.bigDealHeader span {
+  display: block;
+  margin-top: 10px;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 5px;
+}
+
+.bigDealTeam {
+  margin: 25px auto 20px;
+}
+
+.bigDealTeam span,
+.bigDealTeam strong,
+.bigDealTeam b {
+  display: block;
+}
+
+.bigDealTeam span {
+  font-size: 7px;
+  letter-spacing: 3px;
+  color: #a77b75;
+}
+
+.bigDealTeam strong {
+  margin-top: 4px;
+  font-size: 18px;
+}
+
+.bigDealTeam b {
+  color: #ffd65a;
+  font-size: 25px;
+}
+
+.bigDoors {
+  max-width: 1100px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.bigDoor {
+  position: relative;
+  min-height: 380px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 8px solid #d4972f;
+  outline: 3px solid #ffe477;
+  background: linear-gradient(135deg, #7e1c51, #33061e);
+  box-shadow:
+    inset 0 0 50px rgba(0,0,0,.5),
+    0 20px 45px rgba(0,0,0,.4);
+  cursor: pointer;
+  transition: .2s ease;
+}
+
+.bigDoor:hover:not(.revealed) {
+  transform: translateY(-7px);
+}
+
+.bigDoor.selected {
+  box-shadow:
+    0 0 0 5px white,
+    0 0 50px rgba(255, 212, 80, .6);
+}
+
+.bigDoor small {
+  font-size: 12px;
+  letter-spacing: 5px;
+}
+
+.bigDoor > strong {
+  font-size: 150px;
+  line-height: .9;
+  color: #ffd45a;
+}
+
+.locked {
+  position: absolute;
+  bottom: 20px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: #ffd65c;
+  color: #351000;
+  font-size: 8px;
+  font-weight: 1000;
+  letter-spacing: 2px;
+}
+
+.bigDoor.revealed {
+  background:
+    radial-gradient(circle, rgba(255, 216, 88, .18), transparent 55%),
+    #33061e;
+}
+
+.bigPrize span {
+  display: block;
+  font-size: 75px;
+}
+
+.bigPrize strong {
+  display: block;
+  margin-top: 10px;
+  font-size: 27px;
+  color: #ffda5e;
+}
+
+.bigPrize p {
+  font-size: 19px;
+  font-weight: 900;
+}
+
+.bigDealControls {
+  margin-top: 28px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.bigDealControls button {
+  min-width: 180px;
+  padding: 13px;
+  border: 1px solid #c89535;
+  border-radius: 8px;
+  background: rgba(255, 210, 78, .1);
+  color: #ffda5d;
+  font-size: 9px;
+  font-weight: 1000;
+  letter-spacing: 1px;
+  cursor: pointer;
+}
+
+.bigDealControls button:disabled {
+  opacity: .25;
+  cursor: default;
+}
+
+.bigDealControls .exitBigDeal {
+  border-color: rgba(255,255,255,.2);
+  color: #c0a7ad;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 900px) {
+  .mysteryStage,
+  .bigDoors {
+    grid-template-columns: 1fr;
+  }
+
+  .mysteryChoice {
+    min-height: 250px;
+  }
+
+  .hostControls {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .dealHeader {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .headerTag {
+    display: none;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@media (max-width: 600px) {
+  .dealScreen {
+    padding: 10px;
+  }
+
+  .teamRow {
+    flex-wrap: wrap;
+  }
+
+  .teamCard {
+    min-width: 45%;
+  }
+
+  .hostControls {
+    grid-template-columns: 1fr;
+  }
+
+  .dealHeader {
+    min-height: 80px;
+  }
+
+  .dealLogo strong {
+    font-size: 26px;
+  }
+
+  .bigDealButton {
+    padding: 10px;
+  }
+
+  .bigDealControls {
+    flex-direction: column;
+  }
+
+  .bigDealControls button {
+    width: 100%;
+  }
 }
