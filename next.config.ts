@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  output: "export",
+  basePath: "/cephas-lets-make-a-deal",
+  assetPrefix: "/cephas-lets-make-a-deal/",
+  trailingSlash: true,
 };
 
 export default nextConfig;
